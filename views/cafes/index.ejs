@@ -1,0 +1,7 @@
+<h1>Cafes</h1>
+<a href="/cafes/new">Add cafe</a>
+<ul>
+<% for(let cafe of cafes) { %>
+  <li><a href="/cafes/<%= cafe._id %>"><%= cafe.name %></a></li>
+<% } %>
+</ul>

@@ -1,0 +1,8 @@
+<h1><%= cafe.name %></h1>
+<p><%= cafe.location %></p>
+<p>Average Price: <%= cafe.avgPrice %></p>
+<a href="/cafes/<%= cafe._id %>/edit">Edit</a>
+<form action="/cafes/<%= cafe._id %>?_method=DELETE" method="POST">
+  <button type="submit">Delete</button>
+</form>
+<a href="/cafes">Back</a>

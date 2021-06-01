@@ -29,11 +29,12 @@ const generatePrice = function (max) {
   return Math.floor(rawPrice) + decimal / 100
 }
 
-const getPhotos = function () {
+const callUnsplashAPI = function (pageNum, perPage) {
   return new Promise((resolve, reject) => {
     const params = {
       query: "cafe coffee",
-      per_page: 10
+      page: pageNum,
+      per_page: perPage
     }
     const options = {
       hostname: 'api.unsplash.com',
@@ -78,15 +79,19 @@ const getPhotos = function () {
 }
 
 const generate = async function (num) {
+  const imgUrls = await getPhotoUrls()
   for (let i = 0; i < num; i++) {
     const city = cities[getRandomInt(10)]
     const location = `${city.city}, ${city.admin_name}`
     const cafeName = generateName()
     const avgPrice = generatePrice(30)
+    const desc = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sed similique minima, non voluptas consectetur rerum nesciunt delectus quo voluptatibus tempore labore aliquid perferendis maiores, qui, beatae soluta. Quae, eligendi quod."
     const newCafe = new Cafe({
       name: cafeName,
       location,
-      avgPrice
+      desc,
+      avgPrice,
+      imgUrls: imgUrls[i]
     })
     await newCafe.save()
     //console.log(newCafe)
@@ -94,6 +99,29 @@ const generate = async function (num) {
   }
   return 0
 }
+
+const getPhotoUrls = async function () {
+  const perPage = 25
+  let fullResponse
+  let curResponse
+  try {
+    for (let i = 0; i < 2; i++) {
+      if (!fullResponse) {
+        fullResponse = await callUnsplashAPI(i + 1, perPage)
+        // console.log(fullResponse)
+      }
+      else {
+        curResponse = await callUnsplashAPI(i + 1, perPage)
+        // console.log(fullResponse.results)
+        fullResponse.results = [...fullResponse.results, ...curResponse.results]
+      }
+    }
+  } catch (err) {
+    throw err
+  }
+  return fullResponse.results.map(elem => elem.urls)
+}
+
 const generateCafes = async function (num) {
   mongoose.connect('mongodb://localhost/kopiloka', { useNewUrlParser: true, useUnifiedTopology: true })
   const db = mongoose.connection
@@ -111,11 +139,10 @@ const generateCafes = async function (num) {
   }
 }
 
-// generateCafes(50)
-getPhotos()
-  .then(res => {
-    console.log(res)
-  })
-  .catch((err)=>{
-    console.error(err)
-  })
+
+// getPhotoUrls()
+//   .then(res => {
+//     console.log(res)
+//   })
+
+generateCafes(50)

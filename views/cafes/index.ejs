@@ -1,7 +1,28 @@
-<h1>Cafes</h1>
-<a href="/cafes/new">Add cafe</a>
-<ul>
-<% for(let cafe of cafes) { %>
-  <li><a href="/cafes/<%= cafe._id %>"><%= cafe.name %></a></li>
-<% } %>
-</ul>
+<main class="container">
+  <h1>Cafes</h1>
+  <a class="btn btn-primary" href="/cafes/new">Add cafe</a>
+  <% for(let cafe of cafes) { %>
+    <div class="card mb-3">
+      <div class="row g-0">
+        <div class="col-md-4" style="max-height: 250px;">
+          <img src="<%= (cafe.imgUrls) ? cafe.imgUrls.small : '' %>" alt="<%= cafe.name %>"
+            style="height:100%;width:100%;object-fit:cover">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h3 class="card-title">
+              <%= cafe.name %>
+                </h2>
+                <p class="card-subtitle text-muted">
+                  <%= cafe.location %>
+                </p>
+                <p class="card-text">
+                  <%= cafe.desc %>
+                </p>
+                <a href="/cafes/<%= cafe._id %>" class="btn btn-primary">View</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+</main>

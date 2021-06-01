@@ -1,18 +1,24 @@
-<h1>Add a new cafe</h1>
-<form action="/cafes" method="POST">
-  <div>
-    <label for="name">Name:</label>
-    <input type="text" name="cafe[name]" id="name">
-  </div>
-  <div>
-    <label for="location">Location:</label>
-    <input type="text" name="cafe[location]" id="location">
-  </div>
-  <div>
-    <label for="avgPrice">Average Price:</label>
-    <input type="number" name="cafe[avgPrice]" id="avgPrice" step="any">
-  </div>
-  <div>
-    <button type="submit">Save</button>
-  </div>
-</form>
+<main class="container">
+  <h1>Add a new cafe</h1>
+  <form action="/cafes" method="POST">
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" name="cafe[name]" id="name">
+    </div>
+    <div>
+      <label for="location">Location:</label>
+      <input type="text" name="cafe[location]" id="location">
+    </div>
+    <div>
+      <label for="desc">Description:</label>
+      <textarea rows="3" name="cafe[desc]" id="desc"></textarea>
+    </div>
+    <div>
+      <label for="avgPrice">Average Price:</label>
+      <input type="number" name="cafe[avgPrice]" id="avgPrice" step="any">
+    </div>
+    <div>
+      <button type="submit">Save</button>
+    </div>
+  </form>
+</main>

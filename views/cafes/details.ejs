@@ -1,8 +1,34 @@
-<h1><%= cafe.name %></h1>
-<p><%= cafe.location %></p>
-<p>Average Price: <%= cafe.avgPrice %></p>
-<a href="/cafes/<%= cafe._id %>/edit">Edit</a>
-<form action="/cafes/<%= cafe._id %>?_method=DELETE" method="POST">
-  <button type="submit">Delete</button>
-</form>
-<a href="/cafes">Back</a>
+<main class="container-fluid px-0">
+  <div class="cafe-image mb-3">
+    <img src="<%= (cafe.imgUrls) ? cafe.imgUrls.regular : '' %>" alt="<%= cafe.name %>"
+      style="object-fit:cover;width:100%;height: 300px;">
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-10">
+      <h1 class="cafe-name">
+        <%= cafe.name %>
+      </h1>
+      <p class="cafe-location">
+        <%= cafe.location %>
+      </p>
+      <p class="cafe-desc">
+        <%= cafe.desc %>
+      </p>
+      <p class="cafe-price">Average Price: <%= cafe.avgPrice %>
+      </p>
+      <div class="row justify-content-start">
+        <div class="col-2">
+          <a class="btn btn-primary w-100" href="/cafes/<%= cafe._id %>/edit">Edit</a>
+        </div>
+        <div class="col-2">
+          <form action="/cafes/<%= cafe._id %>?_method=DELETE" method="POST">
+            <button class="btn btn-primary  w-100" type="submit">Delete</button>
+          </form>
+        </div>
+        <div class="col-2">
+          <a class="btn btn-primary w-100" href="/cafes">Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

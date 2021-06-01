@@ -3,7 +3,9 @@ const mongoose = require('mongoose')
 const cafeSchema = new mongoose.Schema({
   name: String,
   location: String,
-  avgPrice: Number
+  desc: String,
+  avgPrice: Number,
+  imgUrls: {}
 })
 
 const Cafe = mongoose.model('Cafe', cafeSchema, 'cafes')

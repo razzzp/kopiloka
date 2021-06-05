@@ -2,24 +2,22 @@
   <h1>Edit <%= cafe.name %>
   </h1>
   <form action="/cafes/<%= cafe._id %>?_method=PUT" method="POST">
-    <div>
+    <div class="form-group">
       <label for="name">Name:</label>
-      <input type="text" name="cafe[name]" id="name" value="<%= cafe.name %>">
+      <input type="text" class="form-control" name="cafe[name]" id="name" value="<%= cafe.name %>">
     </div>
-    <div>
+    <div class="form-group">
       <label for="location">Location:</label>
-      <input type="text" name="cafe[location]" id="location" value="<%= cafe.location %>">
+      <input type="text" class="form-control" name="cafe[location]" id="location" value="<%= cafe.location %>">
     </div>
-    <div>
+    <div class="form-group">
       <label for="desc">Description:</label>
-      <textarea rows="3" cols="40" name="cafe[desc]" id="desc"><%= cafe.desc %></textarea>
+      <textarea class="form-control" name="cafe[desc]" id="desc"><%= cafe.desc %></textarea>
     </div>
-    <div>
+    <div class="form-group">
       <label for="avgPrice">Average Price:</label>
-      <input type="number" name="cafe[avgPrice]" id="avgPrice" step="any" value="<%= cafe.avgPrice %>">
+      <input type="number" class="form-control" name="cafe[avgPrice]" id="avgPrice" step="any" value="<%= cafe.avgPrice %>">
     </div>
-    <div>
-      <button type="submit">Save</button>
-    </div>
+    <button type="submit" class="btn btn-primary mt-3">Save</button>
   </form>
 </main>

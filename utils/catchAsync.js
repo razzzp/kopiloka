@@ -1,10 +1,9 @@
-catchAsync = function(fn){
+catchAsync = function(func){
   return function(req, res, next){
-    fn(req, res, next).catch(err=>next(err))
+    func(req, res, next).catch(err=>next(err))
   }
 }
 
 module.exports = {
   catchAsync
-
 }

@@ -6,6 +6,7 @@ const expressLayouts = require('express-ejs-layouts')
 const { Cafe } = require('./models/cafe')
 const { catchAsync } = require('./utils/catchAsync')
 const { AppError } = require('./errors/AppError')
+const { CafeValidator } = require('./models/cafeValidator')
 
 mongoose.connect('mongodb://localhost/kopiloka', { useNewUrlParser: true, useUnifiedTopology: true })
 const db = mongoose.connection
@@ -43,8 +44,8 @@ app.post('/cafes', catchAsync(async function (req, res) {
   }
   const { cafe } = req.body
   cafe.imgUrls = defaultImgUrls
-  const newCafe = new Cafe(cafe)
-  await newCafe.save()
+  CafeValidator.validate(cafe)
+  const newCafe = await new Cafe(cafe).save()
   res.redirect('/cafes')
 }))
 
@@ -61,7 +62,7 @@ app.get('/cafes/:id', catchAsync(async function (req, res) {
   const locals = {
     title: cafe.name
   }
-  console.log(cafe.imgUrls)
+  // console.log(cafe.imgUrls)
   res.render('cafes/details', { locals, cafe })
 }))
 
@@ -72,19 +73,20 @@ app.delete('/cafes/:id', catchAsync(async function (req, res) {
 }))
 
 app.put('/cafes/:id', catchAsync(async function (req, res) {
-    const { id } = req.params
-    const { cafe } = req.body
-    const updatedCafe = await Cafe.findByIdAndUpdate(id, cafe)
-    res.redirect(`/cafes/${updatedCafe._id}`)
+  const { id } = req.params
+  const { cafe } = req.body
+  CafeValidator.validate(cafe)
+  const updatedCafe = await Cafe.findByIdAndUpdate(id, cafe)
+  res.redirect(`/cafes/${updatedCafe._id}`)
 }))
 
 app.get('/cafes/:id/edit', catchAsync(async function (req, res) {
-    const { id } = req.params
-    const cafe = await Cafe.findById(id)
-    const locals = {
-      title: `Edit ${cafe.name}`
-    }
-    res.render('cafes/edit', { locals, cafe })
+  const { id } = req.params
+  const cafe = await Cafe.findById(id)
+  const locals = {
+    title: `Edit ${cafe.name}`
+  }
+  res.render('cafes/edit', { locals, cafe })
 }))
 
 app.get('/', function (req, res) {
@@ -94,10 +96,14 @@ app.get('/', function (req, res) {
   res.render('index', { locals })
 })
 
+app.all('*', function (req, res) {
+  //404 route
+  throw new AppError("404 not found", 404)
+})
+
 app.use(function (err, req, res, next) {
-  if (err.status)
-    res.status(err.status)
-  res.send(err.message)
+  const { status = 500 } = err
+  res.status(status).render('error', { err })
 })
 
 app.listen(port, function () {

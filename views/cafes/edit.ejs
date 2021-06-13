@@ -2,32 +2,14 @@
   <h1>Edit <%= cafe.name %>
   </h1>
   <form action="/cafes/<%= cafe._id %>?_method=PUT" method="POST" class="needs-validation" novalidate>
-    <div class="form-group">
-      <label for="name">Name:</label>
-      <input type="text" class="form-control" name="cafe[name]" id="name" 
-        value="<%= cafe.name %>" required>
-    </div>
-    <div class="form-group">
-      <label for="location">Location:</label>
-      <input type="text" class="form-control" name="cafe[location]" id="location" 
-        value="<%= cafe.location %>" required>
-    </div>
-    <div class="form-group">
-      <label for="desc">Description:</label>
-      <textarea class="form-control" name="cafe[desc]" id="desc" required>
-        <%= cafe.desc %>
-      </textarea>
-    </div>
-    <div class="form-group">
-      <label for="avgPrice">Average Price:</label>
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="inputGroupPrepend">$</span>
-        </div>
-        <input type="number" class="form-control" name="cafe[avgPrice]" id="avgPrice" step="any"
-          value="<%= cafe.avgPrice %>">
+    <%- include('form') %>
+    <div class="row g-2 justify-content-start">
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary mt-3 w-100">Save</button>
+      </div>
+      <div class="col-2">
+        <a href="/cafes/<%= cafe._id %>" class="btn btn-primary mt-3 w-100">Cancel</a>
       </div>
     </div>
-    <button type="submit" class="btn btn-primary mt-3">Save</button>
   </form>
 </main>

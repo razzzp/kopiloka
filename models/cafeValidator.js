@@ -1,4 +1,4 @@
-const Joi = require('joi')
+const Joi = require('joi');
 
 const CafeValidator = Joi.object({
   name: Joi.string()
@@ -11,6 +11,6 @@ const CafeValidator = Joi.object({
     .alphanum()
     .required(),
   avgPrice: Joi.number(),
-})
+});
 
-module.exports = { CafeValidator }
+module.exports = CafeValidator;

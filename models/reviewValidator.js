@@ -7,4 +7,4 @@ const ReviewValidator = Joi.object({
     .max(5)
 });
 
-module.exports = ReviewValidator;
+module.exports = {ReviewValidator};

@@ -1,16 +1,15 @@
 // stupid git deleting my files
 // TODO: get photos from unsplash
 const mongoose = require('mongoose')
-const { Cafe } = require('../models/cafe')
+const { Cafe }= require('../models/cafe')
 const https = require('https')
 const qs = require('querystring');
 const cities = require('./id_cities.js')
 const name1 = require('./name_1.js')
 const name2 = require('./name_2.js')
 const name3 = require('./name_3.js');
-const { resolve } = require('path');
 
-const myAccessKey = "YVw_gKpbaoIouFxq1tVCrjmuGgHdCp0R9UB8fkp-EiE"
+const { unsplashAccessKey } = require('../secrets/keys');
 
 const getRandomInt = function (max) {
   return Math.floor(Math.random() * max)
@@ -30,6 +29,7 @@ const generatePrice = function (max) {
 }
 
 const callUnsplashAPI = function (pageNum, perPage) {
+  if (!unsplashAccessKey) throw "No unsplash API key";
   return new Promise((resolve, reject) => {
     const params = {
       query: "cafe coffee",
@@ -41,7 +41,7 @@ const callUnsplashAPI = function (pageNum, perPage) {
       path: '/search/photos?' + qs.stringify(params),
       method: 'GET',
       headers: {
-        "Authorization": "Client-ID " + myAccessKey
+        "Authorization": "Client-ID " + unsplashAccessKey
       }
     }
     const req = https.request(options, res => {
@@ -126,17 +126,17 @@ const generateCafes = async function (num) {
   mongoose.connect('mongodb://localhost/kopiloka', { useNewUrlParser: true, useUnifiedTopology: true })
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'connection error:'))
-  db.once('open', function () {
+  db.once('open', async function () {
     console.log("Connected to the database...")
+    try {
+      await Cafe.deleteMany({})
+      await generate(num)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      mongoose.disconnect()
+    }
   })
-  try {
-    await Cafe.deleteMany({})
-    await generate(num)
-  } catch (e) {
-    console.error(e)
-  } finally {
-    mongoose.disconnect()
-  }
 }
 
 

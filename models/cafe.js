@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Review = require('./review');
+const {Review} = require('./review');
 const cafeSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -23,4 +23,4 @@ Cafe.getReviews = async function(forCafe){
     throw new Error('Error in Cafe.getReviews, forCafe param and/or its id is undefined.');
 };
 
-module.exports = Cafe;
+module.exports = {Cafe};

@@ -1,9 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Cafe = require('../models/cafe');
-const CafeValidator = require('../models/cafeValidator');
-const Review = require('../models/review');
-const ReviewValidator = require('../models/reviewValidator');
+const {Cafe} = require('../models/cafe');
+const {CafeValidator} = require('../models/cafeValidator');
+const {Review} = require('../models/review');
+const {ReviewValidator} = require('../models/reviewValidator');
 const { catchAsync } = require('../utils/catchAsync');
 
 cafeRouter = express.Router();

@@ -13,4 +13,4 @@ const CafeValidator = Joi.object({
   avgPrice: Joi.number(),
 });
 
-module.exports = CafeValidator;
+module.exports = {CafeValidator};

@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Review = require('../models/review');
-const ReviewValidator = require('../models/reviewValidator');
+const {Review} = require('../models/review');
+const {ReviewValidator} = require('../models/reviewValidator');
 const { catchAsync } = require('../utils/catchAsync');
 
 reviewRouter = express.Router();

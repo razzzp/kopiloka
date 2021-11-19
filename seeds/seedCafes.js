@@ -29,7 +29,6 @@ const generatePrice = function (max) {
 }
 
 const callUnsplashAPI = function (pageNum, perPage) {
-  if (!unsplashAccessKey) throw "No unsplash API key";
   return new Promise((resolve, reject) => {
     const params = {
       query: "cafe coffee",
@@ -123,6 +122,7 @@ const getPhotoUrls = async function () {
 }
 
 const generateCafes = async function (num) {
+  if (!unsplashAccessKey) throw "No unsplash API key";
   mongoose.connect('mongodb://localhost/kopiloka', { useNewUrlParser: true, useUnifiedTopology: true })
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'connection error:'))

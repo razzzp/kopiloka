@@ -6,7 +6,7 @@ const { catchAsync } = require('../utils/catchAsync');
 
 reviewRouter = express.Router();
 
-reviewRouter.delete('/reviews/:id', catchAsync(async function (req, res) {
+reviewRouter.delete('/:id', catchAsync(async function (req, res) {
   const { id } = req.params;
   const { fromCafeId } = req.query;
   const review = await Review.findByIdAndDelete(id);

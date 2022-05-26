@@ -5,7 +5,9 @@ const methodOverride = require('method-override');
 const expressLayouts = require('express-ejs-layouts');
 const { AppError } = require('./errors/AppError');
 const cafeRouter = require('./routers/cafeRouter');
-const reviewRouter = require('./routers/reviewRouter');
+const reviewRouter = require('./routers/reviewRouter')
+const session = require('express-session')
+const flash = require('connect-flash')
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/kopiloka');
@@ -28,9 +30,27 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(expressLayouts);
 
+const sessionOptions ={
+  secret: 'tempsecret',
+  resave: false,
+  saveUninitialized: true,
+  cookie : {
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge:  1000 * 60 * 60 * 24 * 7
+  }
+}
+app.use(session(sessionOptions))
+app.use(flash())
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success')
+  console.log(res.locals.success)
+  next()
+})
+
 // routers
-app.use(cafeRouter);
-app.use(reviewRouter);
+app.use('/cafes', cafeRouter);
+app.use('/reviews', reviewRouter)
 
 // home route
 app.get('/', function (req, res) {

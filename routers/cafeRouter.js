@@ -7,6 +7,7 @@ const {ReviewValidator} = require('../models/reviewValidator');
 const { catchAsync } = require('../utils/catchAsync');
 const flash = require('connect-flash')
 const passport = require('passport');
+const { requireLogin } = require('../middlewares')
 
 cafeRouter = express.Router();
 
@@ -18,28 +19,32 @@ cafeRouter.get('/', catchAsync(async function (req, res) {
   res.render('cafes/index', { locals, cafes});
 }));
 
-cafeRouter.post('/', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), catchAsync(async function (req, res) {
-  const defaultImgUrls = {
-    "raw": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1",
-    "full": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1&q=85",
-    "regular": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1&q=80&w=1080",
-    "small": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1&q=80&w=400",
-    "thumb": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1&q=80&w=200"
-  };
-  const { cafe } = req.body;
-  cafe.imgUrls = defaultImgUrls;
-  CafeValidator.validate(cafe);
-  const newCafe = await new Cafe(cafe).save();
-  req.flash('success', 'Cafe has been successfully created!')
-  res.redirect(`/cafes/${newCafe.id}`);
-}));
+cafeRouter.post('/',
+  requireLogin, 
+  catchAsync(async function (req, res) {
+    const defaultImgUrls = {
+      "raw": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1",
+      "full": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1&q=85",
+      "regular": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1&q=80&w=1080",
+      "small": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1&q=80&w=400",
+      "thumb": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1&q=80&w=200"
+    };
+    const { cafe } = req.body;
+    cafe.imgUrls = defaultImgUrls;
+    CafeValidator.validate(cafe);
+    const newCafe = await new Cafe(cafe).save();
+    req.flash('success', 'Cafe has been successfully created!')
+    res.redirect(`/cafes/${newCafe.id}`);
+  }));
 
-cafeRouter.get('/new', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), function (req, res) {
-  const locals = {
-    title: "New Cafe"
-  };
-  res.render('cafes/new', { locals });
-});
+cafeRouter.get('/new',
+  requireLogin,
+  function (req, res) {
+    const locals = {
+      title: "New Cafe"
+    };
+    res.render('cafes/new', { locals });
+  });
 
 cafeRouter.get('/:id', catchAsync(async function (req, res) {
   const { id } = req.params;
@@ -53,40 +58,48 @@ cafeRouter.get('/:id', catchAsync(async function (req, res) {
   res.render('cafes/details', { locals, cafe });
 }));
 
-cafeRouter.delete('/:id', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),catchAsync(async function (req, res) {
-  const { id } = req.params;
-  const reviews = await Review.deleteMany({ myOwner: id })
-  const cafe = await Cafe.findByIdAndDelete(id);
-  res.redirect('..');
-}));
+cafeRouter.delete('/:id', 
+  requireLogin,
+  catchAsync(async function (req, res) {
+    const { id } = req.params;
+    const reviews = await Review.deleteMany({ myOwner: id })
+    const cafe = await Cafe.findByIdAndDelete(id);
+    res.redirect('..');
+  }));
 
-cafeRouter.put('/:id', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), catchAsync(async function (req, res) {
-  const { id } = req.params;
-  const { cafe } = req.body;
-  CafeValidator.validate(cafe);
-  const updatedCafe = await Cafe.findByIdAndUpdate(id, cafe);
-  res.redirect(`${updatedCafe._id}`);
-}));
+cafeRouter.put('/:id', 
+  requireLogin,
+  catchAsync(async function (req, res) {
+    const { id } = req.params;
+    const { cafe } = req.body;
+    CafeValidator.validate(cafe);
+    const updatedCafe = await Cafe.findByIdAndUpdate(id, cafe);
+    req.flash('success', 'Changes saved')
+    res.redirect(`${updatedCafe._id}`);
+  }));
 
-cafeRouter.get('/:id/edit', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), catchAsync(async function (req, res) {
-  const { id } = req.params;
-  const cafe = await Cafe.findById(id);
-  const locals = {
-    title: `Edit ${cafe.name}`
-  };
-  res.render('cafes/edit', { locals, cafe });
-}));
+cafeRouter.get('/:id/edit', 
+  requireLogin, 
+  catchAsync(async function (req, res) {
+    const { id } = req.params;
+    const cafe = await Cafe.findById(id);
+    const locals = {
+      title: `Edit ${cafe.name}`
+    };
+    res.render('cafes/edit', { locals, cafe });
+  }));
 
-cafeRouter.post('/:id/reviews', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }) ,catchAsync(async function (req, res) {
-  
-  const { id } = req.params;
-  const { review } = req.body;
-  console.log(`Post review in cafe ${id} `)
-  ReviewValidator.validate(review)
-  const newReview = new Review(review);
-  newReview.myOwner = mongoose.Types.ObjectId(id);
-  await newReview.save();
-  res.redirect(`../${id}`);
-}));
+cafeRouter.post('/:id/reviews', 
+  requireLogin,
+  catchAsync(async function (req, res) {
+    const { id } = req.params;
+    const { review } = req.body;
+    console.log(`Post review in cafe ${id} `)
+    ReviewValidator.validate(review)
+    const newReview = new Review(review);
+    newReview.myOwner = mongoose.Types.ObjectId(id);
+    await newReview.save();
+    res.redirect(`../${id}`);
+  }));
 
 module.exports = cafeRouter;

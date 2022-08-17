@@ -1,34 +1,33 @@
-<main class="container">
-  <div class="row">
-    <div class="col-md-10 col-sm-8 py-2">
-      <h1>Cafes</h1>
-    </div>
-    <div class="col-md-2 col-sm-4 py-2">
-      <a class="btn btn-primary w-100" href="/cafes/new">Add cafe</a>
-    </div>
+
+<div class="row">
+  <div class="col-md-10 col-sm-8 py-2">
+    <h1>Cafes</h1>
   </div>
-  <% for(let cafe of cafes) { %>
-    <div class="card mb-3">
-      <div class="row g-0">
-        <div class="col-md-4" style="max-height: 250px;">
-          <img src="<%= (cafe.imgUrls) ? cafe.imgUrls.small : '' %>" alt="<%= cafe.name %>"
-            style="height:100%;width:100%;object-fit:cover">
-        </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h3 class="card-title">
-              <%= cafe.name %>
-            </h3>
-            <p class="card-subtitle text-muted">
-              <%= cafe.location %>
-            </p>
-            <p class="card-text">
-              <%= cafe.desc %>
-            </p>
-            <a href="/cafes/<%= cafe._id %>" class="btn btn-primary">View</a>
-          </div>
+  <div class="col-md-2 col-sm-4 py-2">
+    <a class="btn btn-primary" href="/cafes/new">Add cafe</a>
+  </div>
+</div>
+<% for(let cafe of cafes) { %>
+  <div class="card mb-3">
+    <div class="row g-0">
+      <div class="col-lg-6" style="max-height: 250px;">
+        <img src="<%= (cafe.imgUrls) ? cafe.imgUrls.small : '' %>" alt="<%= cafe.name %>"
+          style="height:100%;width:100%;object-fit:cover">
+      </div>
+      <div class="col-lg-6">
+        <div class="card-body">
+          <h3 class="card-title">
+            <%= cafe.name %>
+          </h3>
+          <p class="card-subtitle text-muted">
+            <%= cafe.location %>
+          </p>
+          <p class="card-text">
+            <%= cafe.desc %>
+          </p>
+          <a href="/cafes/<%= cafe._id %>" class="btn btn-primary">View</a>
         </div>
       </div>
     </div>
-    <% } %>
-</main>
+  </div>
+  <% } %>

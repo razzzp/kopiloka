@@ -9,22 +9,30 @@ userRouter = express.Router();
 
 userRouter.get('/login', function(req, res){
     // req.session.returnTo = req.session.returnTo;
-    res.render('user/login')
+    console.log(req.session);
+    res.render('user/login');
 });
 
 userRouter.post('/login', 
+    function(req, res, next){
+        // middleware to save returnTo to req object,
+        //  because passport.authenticate clears session
+        //  data
+        req.returnTo = req.session.returnTo;
+        next();
+    },
     passport.authenticate('local', {
         failureFlash : 'Incorrect username or password',
         failureRedirect: '/login'
     }),
     function(req, res){
-        // console.log(req.session)
-        const redirectTo = req.session.returnTo || '/cafes';
+        console.log(req.session)
+        const redirectTo = req.returnTo || '/cafes';
         req.flash('success', 'Welcome back');
-        if(redirectTo){
-            delete req.session.returnTo;
-            req.session.save();
-        } 
+
+        delete req.session.returnTo;
+        req.session.save();
+
         res.redirect(redirectTo);     
     });
 
@@ -41,7 +49,7 @@ userRouter.post('/register',
                 username : username,
             });
             console.log('registering user...')
-            registeredUser = User.register(newUser, password);
+            registeredUser = await User.register(newUser, password);
             console.log('user registered.');
             req.login(registeredUser, function(err){
                 if(err)return next(err)
@@ -52,7 +60,7 @@ userRouter.post('/register',
             });        
         } catch (e) {
             console.log('error while user register!');
-            req.flash('error', 'Failed to register:' + e);
+            req.flash('error', 'Failed to register: ' + e.message);
             res.redirect('/register');
         }
     })

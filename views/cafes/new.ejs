@@ -1,14 +1,13 @@
-<main class="container">
-  <h1>Add a new cafe</h1>
-  <form action="/cafes" method="POST" class="needs-validation" novalidate>
-    <%- include('form', {cafe:null}) %>
-    <div class="row g-2 justify-content-start">
-      <div class="col-2">
-        <button type="submit" class="btn btn-primary mt-3 w-100">Create</button>
-      </div>
-      <div class="col-2">
-        <a href="/cafes" class="btn btn-primary mt-3 w-100">Cancel</a>
-      </div>
+
+<h1>Add a new cafe</h1>
+<form action="/cafes" method="POST" class="needs-validation" novalidate>
+  <%- include('form', {cafe:null}) %>
+  <div class="row g-2 justify-content-start">
+    <div class="col-2">
+      <button type="submit" class="btn btn-primary mt-3 w-100">Create</button>
     </div>
-  </form>
-</main>
+    <div class="col-2">
+      <a href="/cafes" class="btn btn-primary mt-3 w-100">Cancel</a>
+    </div>
+  </div>
+</form>

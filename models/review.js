@@ -12,7 +12,12 @@ const reviewSchema = new mongoose.Schema({
   },
   myOwner: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cafe',
     required: true
+  },
+  author:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }
 });
 const Review = mongoose.model('Review',reviewSchema,'reviews');

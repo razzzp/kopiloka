@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const crypto = require('node:crypto');
 const passportLocalMongoose = require('passport-local-mongoose');
 
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true,
@@ -68,7 +68,7 @@ const userSchema = new mongoose.Schema({
 //     }
 // }
 
-userSchema.plugin(passportLocalMongoose)
+UserSchema.plugin(passportLocalMongoose)
 
-const User = mongoose.model('User',userSchema,'users');
-module.exports = {User};
+const User = mongoose.model('User',UserSchema,'users');
+module.exports = {User, UserSchema};

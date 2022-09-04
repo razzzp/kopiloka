@@ -9,7 +9,7 @@ userRouter = express.Router();
 
 userRouter.get('/login', function(req, res){
     // req.session.returnTo = req.session.returnTo;
-    console.log(req.session);
+    // console.log(req.session);
     res.render('user/login');
 });
 
@@ -26,9 +26,9 @@ userRouter.post('/login',
         failureRedirect: '/login'
     }),
     function(req, res){
-        console.log(req.session)
+        // console.log(req.session)
         const redirectTo = req.returnTo || '/cafes';
-        req.flash('success', 'Welcome back');
+        req.flash('success', 'Welcome back ' + req.user.username);
 
         delete req.session.returnTo;
         req.session.save();

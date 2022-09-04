@@ -123,7 +123,7 @@ const getPhotoUrls = async function () {
 
 const generateCafes = async function (num) {
   if (!unsplashAccessKey) throw "No unsplash API key";
-  mongoose.connect('mongodb://localhost/kopiloka', { useNewUrlParser: true, useUnifiedTopology: true })
+  mongoose.connect('mongodb://127.0.0.1:27017/kopiloka', { useNewUrlParser: true, useUnifiedTopology: true })
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'connection error:'))
   db.once('open', async function () {

@@ -7,7 +7,7 @@ const {ReviewValidator} = require('../models/reviewValidator');
 const { catchAsync } = require('../utils/catchAsync');
 const flash = require('connect-flash')
 const passport = require('passport');
-const { requireLogin } = require('../middlewares')
+const { requireLogin, isAuthor } = require('../middlewares')
 
 cafeRouter = express.Router();
 
@@ -30,6 +30,7 @@ cafeRouter.post('/',
       "thumb": "https://images.unsplash.com/photo-1601759226705-cf16b1630f5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMzUxODN8MHwxfHNlYXJjaHwxfHxjYWZlJTIwY29mZmVlfGVufDB8fHx8MTYyMjUxNjUxOQ&ixlib=rb-1.2.1&q=80&w=200"
     };
     const { cafe } = req.body;
+    cafe.author = mongoose.Types.ObjectId(req.user._id);
     cafe.imgUrls = defaultImgUrls;
     CafeValidator.validate(cafe);
     const newCafe = await new Cafe(cafe).save();
@@ -48,27 +49,26 @@ cafeRouter.get('/new',
 
 cafeRouter.get('/:id', catchAsync(async function (req, res) {
   const { id } = req.params;
-  const cafe = await Cafe.findById(id);
+  const cafe = await Cafe.findById(id).populate('author');
   cafe.myReviews = await Cafe.getReviews(cafe);
-  const locals = {
-    title: cafe.name
-  };
-  // console.log(cafe.imgUrls)
-  // console.log(cafe.myReviews);
-  res.render('cafes/details', { locals, cafe });
+  // console.log(cafe.author._id);
+  // if (req.user) console.log(req.user._id);
+  res.render('cafes/details', { cafe,  user: req.user});
 }));
 
 cafeRouter.delete('/:id', 
   requireLogin,
+  catchAsync(isAuthor),
   catchAsync(async function (req, res) {
     const { id } = req.params;
     const reviews = await Review.deleteMany({ myOwner: id })
     const cafe = await Cafe.findByIdAndDelete(id);
-    res.redirect('..');
+    res.redirect('/cafes');
   }));
 
 cafeRouter.put('/:id', 
   requireLogin,
+  catchAsync(isAuthor),
   catchAsync(async function (req, res) {
     const { id } = req.params;
     const { cafe } = req.body;
@@ -80,6 +80,7 @@ cafeRouter.put('/:id',
 
 cafeRouter.get('/:id/edit', 
   requireLogin, 
+  catchAsync(isAuthor),
   catchAsync(async function (req, res) {
     const { id } = req.params;
     const cafe = await Cafe.findById(id);
@@ -94,10 +95,11 @@ cafeRouter.post('/:id/reviews',
   catchAsync(async function (req, res) {
     const { id } = req.params;
     const { review } = req.body;
-    console.log(`Post review in cafe ${id} `)
+    // console.log(`Post review in cafe ${id} `)
     ReviewValidator.validate(review)
     const newReview = new Review(review);
     newReview.myOwner = mongoose.Types.ObjectId(id);
+    newReview.author = req.user;
     await newReview.save();
     res.redirect(`../${id}`);
   }));

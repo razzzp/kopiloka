@@ -5,17 +5,16 @@ const cafeController = require('../controllers/cafeController');
 
 cafeRouter = express.Router();
 
-cafeRouter.get('/', catchAsync(cafeController.retrieveCafes));
-
-cafeRouter.post('/', requireLogin, catchAsync(cafeController.createCafe));
+cafeRouter.route('/')
+    .get(catchAsync(cafeController.retrieveCafes))
+    .post(requireLogin, catchAsync(cafeController.createCafe));
 
 cafeRouter.get('/new', requireLogin, cafeController.renderNewForm);
 
-cafeRouter.get('/:id', catchAsync(cafeController.retrieveCafe));
-
-cafeRouter.delete('/:id', requireLogin, catchAsync(isAuthor), catchAsync(cafeController.deleteCafe));
-
-cafeRouter.put('/:id', requireLogin, catchAsync(isAuthor), catchAsync(cafeController.updateCafe));
+cafeRouter.route('/:id')
+    .get(catchAsync(cafeController.retrieveCafe))
+    .delete(requireLogin, catchAsync(isAuthor), catchAsync(cafeController.deleteCafe))
+    .put(requireLogin, catchAsync(isAuthor), catchAsync(cafeController.updateCafe));
 
 cafeRouter.get('/:id/edit', requireLogin, catchAsync(isAuthor), catchAsync(cafeController.renderEditForm));
 

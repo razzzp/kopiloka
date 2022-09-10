@@ -42,7 +42,7 @@
     <!-- review form -->
     <div class="review-form my-4">
       <h2>Leave a review:</h2>
-      <form action="/cafes/<%= cafe.id %>/reviews" method="POST">
+      <form action="/reviews/<%= cafe.id %>" method="POST">
         <div class="form-group my-2">
           <label for="rating">Rating</label>
           <input type="range" min="1" max="5" step="1" id="rating" name="review[rating]">
